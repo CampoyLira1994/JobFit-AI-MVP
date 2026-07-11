@@ -1,0 +1,28 @@
+Demo Candidate
+Electrical Engineering Candidate
+demo@example.com
+
+Summary
+Technical candidate with experience in field supervision, electrical
+installations, documentation, project coordination, and reporting. This sample
+CV is intentionally anonymized and should be replaced locally with a private CV
+before generating real application documents.
+
+Skills
+- Electrical installations
+- Field supervision
+- AutoCAD
+- Excel
+- Cost analysis
+- Material requisitions
+- Safety and quality follow-up
+- Technical reporting
+
+Experience
+Project Supervision Assistant
+- Supported technical documentation and field coordination.
+- Reviewed drawings, material lists, and progress reports.
+- Coordinated follow-up items with project stakeholders.
+
+Education
+Electrical engineering background

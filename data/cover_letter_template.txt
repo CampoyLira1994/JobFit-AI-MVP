@@ -1,0 +1,19 @@
+Hiring Team
+Example Company
+
+Cover Letter
+
+Dear Hiring Manager,
+
+I am applying for the role described in the job posting. My background includes
+hands-on technical work, project coordination, documentation, and stakeholder
+communication.
+
+I am especially interested in roles where I can contribute to field execution,
+technical analysis, quality control, and continuous improvement. I keep this
+template intentionally generic so it can be adapted with verified, candidate-
+specific information before any application is sent.
+
+Best regards,
+Demo Candidate
+demo@example.com
