@@ -1,16 +1,16 @@
-Demo Candidate
-Electrical Engineering Candidate
-demo@example.com
+Candidate Example 001
+Technical Engineering Candidate
+candidate@example.invalid
 
 Summary
-Technical candidate with experience in field supervision, electrical
-installations, documentation, project coordination, and reporting. This sample
-CV is intentionally anonymized and should be replaced locally with a private CV
-before generating real application documents.
+Synthetic candidate used only to demonstrate JobFit locally. This file does not
+represent a real person and contains no real contact information, employment
+history, academic institution, identity document, or private profile data.
 
 Skills
-- Electrical installations
+- Technical documentation
 - Field supervision
+- Electrical installations
 - AutoCAD
 - Excel
 - Cost analysis
@@ -19,10 +19,10 @@ Skills
 - Technical reporting
 
 Experience
-Project Supervision Assistant
+Technical Project Assistant — synthetic example
 - Supported technical documentation and field coordination.
 - Reviewed drawings, material lists, and progress reports.
 - Coordinated follow-up items with project stakeholders.
 
 Education
-Electrical engineering background
+Generic technical engineering background — synthetic example
