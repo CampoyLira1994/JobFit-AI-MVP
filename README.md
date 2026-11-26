@@ -1,32 +1,164 @@
-# JobFit-AI-MVP
+# JobFit AI — public collaboration mirror
 
-<p align="center">
-  <a href="https://www.python.org/downloads/">
-    <img src="https://img.shields.io/badge/python-3.11%2B-blue.svg" alt="Python 3.11+">
-  </a>
-  <a href="https://github.com/CampoyLira1994/JobFit-AI-MVP/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT">
-  </a>
-  <a href="https://github.com/CampoyLira1994/JobFit-AI-MVP/issues">
-    <img src="https://img.shields.io/github/issues/CampoyLira1994/JobFit-AI-MVP" alt="GitHub issues">
-  </a>
-</p>
+JobFit is a job-discovery and decision-support project that searches vacancies, normalizes and deduplicates results, evaluates fit against a candidate profile, and separates **search results** from **opportunities intentionally saved for follow-up**.
 
-JobFit-AI-MVP is a Python MVP for finding, consolidating, and scoring job openings against a configurable candidate profile. It focuses on electrical engineering and field-supervision roles, with explicit checks for salary fit, location fit, role relevance, missing requirements, and red flags that should not be overstated in a CV or application.
+> **Repository status (November 2026):** this public repository still contains the original sanitized MVP snapshot. The canonical local implementation has advanced into **Campoy Nexus / JobFit** with a PostgreSQL-backed execution model, a dedicated worker and a web interface. That newer source has **not yet been synchronized into this public mirror**, so contributors should not assume every capability described below is already present on `main`.
 
-The project does not apply to jobs automatically. It ranks opportunities, exports analysis, and helps decide which applications deserve manual review.
+## Why the project exists
 
-## What It Does
+Job boards return many vacancies, but finding a vacancy is not the same as deciding whether it is worth applying to. JobFit is designed to make that second step explicit and auditable.
 
-- Searches job sources through API-based agents such as Adzuna and SerpAPI Google Jobs.
-- Normalizes and deduplicates vacancies across sources.
-- Scores technical fit, salary fit, location fit, and role relevance.
-- Detects restrictions such as title-in-progress, professional license claims, certifications, unsupported tools, and relocation conflicts.
-- Separates local ZMVM openings from broader Estado de Mexico locations that need distance validation.
-- Exports ranked results to JSON and CSV.
-- Keeps the legacy FastAPI backend and scraper modules available for future integration work.
+The intended flow is:
 
-## Quick Start
+```text
+Candidate profile
+      ↓
+Search preset
+      ↓
+Job provider (currently Adzuna in the validated Nexus flow)
+      ↓
+Normalize + deduplicate
+      ↓
+Filter + score
+      ↓
+Decision bucket
+      ↓
+Manual review
+      ↓
+Saved opportunity / application tracking
+```
+
+JobFit does **not** automatically apply to jobs and it must not invent degrees, licenses, certifications, tools or experience that are not supported by the candidate profile.
+
+## Current validated architecture
+
+The newer Campoy Nexus implementation has been validated locally with the following separation:
+
+```text
+Campoy Nexus Web
+      ↓
+FastAPI
+      ↓
+PostgreSQL
+      ├── candidate profiles
+      ├── search runs
+      ├── search results
+      ├── feedback
+      └── saved opportunities
+      ↓
+JobFit Worker
+      ↓
+Job-search provider
+```
+
+A search run follows an explicit lifecycle such as:
+
+```text
+queued → running → completed
+```
+
+and results are classified into canonical decision buckets:
+
+- `apply_now`
+- `review_requirements`
+- `validate_salary`
+- `discard`
+- `blocked`
+
+The saved-opportunity bank is intentionally separate from raw search results. A result should only become a tracked opportunity after an explicit save action.
+
+## Validated milestones
+
+The canonical local project has reached these milestones:
+
+- **Alpha 1 — data contract:** candidate profiles, search runs, search results, feedback and saved-opportunity relationships.
+- **Alpha 2 — real worker pipeline:** PostgreSQL queue, dedicated JobFit worker, real Adzuna execution, persisted results and per-run artifacts.
+- **Alpha 3A — Nexus web shell:** navigation and read-only JobFit views for search history, run details, results and saved opportunities.
+
+One real end-to-end validation run completed with:
+
+- 95 raw results
+- 80 unique results
+- 10 evaluated/persisted results
+- 1 `apply_now`
+- 2 `review_requirements`
+- 7 `discard`
+- 3 canonical applicable results
+
+These figures document one validation execution; they are **not** claims about general model quality.
+
+## Academic extension: JobFit + Career Atlas
+
+The project is also being used as a technical antecedent for an academic innovation proposal.
+
+The distinction is important:
+
+### Existing technical antecedent
+
+JobFit / Campoy Nexus provides search, execution, persistence, scoring infrastructure, operational traceability and the opportunity workflow.
+
+### Research contribution still to be tested
+
+Career Atlas proposes adding traceable, human-reviewed evidence linked to normalized competencies and comparing:
+
+- **A:** lexical baseline
+- **B:** semantic baseline
+- **C:** semantic ranking adjusted with reviewed evidence
+
+The academic hypothesis is not considered validated until the planned dataset, annotation, baselines, metrics and A/B/C experiment are actually executed.
+
+No claim is made that JobFit authenticates degrees, certificates or professional competence.
+
+## What is currently in this public repository
+
+The current `main` branch is the earlier sanitized Python MVP. It includes:
+
+- JobFit scoring logic
+- Adzuna / SerpAPI-oriented search components
+- examples and tests
+- an older FastAPI service
+- Docker support
+- deployment documentation
+
+It does **not yet contain the complete Campoy Nexus Alpha 1–3A source tree** described above.
+
+This status is intentional to avoid publishing local secrets, personal candidate data, runtime artifacts or unrelated Campoy Agent Core modules before a controlled public synchronization.
+
+## Collaboration priorities
+
+Contributions are especially useful in these areas:
+
+1. Search quality and deduplication.
+2. Explainable scoring and decision buckets.
+3. Salary normalization and location rules.
+4. Public-safe candidate profile schemas.
+5. Test coverage and reproducibility.
+6. Career Atlas competency/evidence data model.
+7. ESCO mapping experiments.
+8. Evaluation methodology: NDCG@5, Precision@5 and explanation fidelity.
+9. Security/privacy review before public deployment.
+10. Web UX for reviewing search runs and opportunities.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for collaboration rules and [docs/CURRENT_ARCHITECTURE.md](docs/CURRENT_ARCHITECTURE.md) for the target architecture and synchronization boundary.
+
+## Security and privacy
+
+Never commit:
+
+- `.env` files
+- API keys or tokens
+- database URLs containing credentials
+- CVs or identity documents
+- private candidate profiles
+- private company/customer information
+- runtime artifacts with personal data
+- production database dumps
+
+Use synthetic or explicitly authorized data in examples and tests.
+
+## Running the current public MVP
+
+The commands below apply to the code that is currently published on `main`:
 
 ```powershell
 git clone https://github.com/CampoyLira1994/JobFit-AI-MVP.git
@@ -37,93 +169,27 @@ python -m venv .venv
 
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
-```
-
-Create a local `.env` file from `.env.example` and fill only the services you plan to use.
-
-```env
-ADZUNA_APP_ID=your_adzuna_app_id
-ADZUNA_APP_KEY=your_adzuna_app_key
-ADZUNA_COUNTRY=mx
-
-SERPAPI_API_KEY=your_serpapi_key
-SERPAPI_GOOGLE_DOMAIN=google.com.mx
-SERPAPI_GL=mx
-SERPAPI_HL=es
-
-GOOGLE_API_KEY=your_google_api_key
-```
-
-## Common Commands
-
-Run the local sample scoring demo:
-
-```powershell
-python examples/jobfit_demo.py
-```
-
-Run the multi-source JobFit flow:
-
-```powershell
-python examples/multi_source_jobfit_demo.py
-```
-
-Run the focused JobFit test suite:
-
-```powershell
 python -m pytest
 ```
 
-Start the API backend:
+Create a local `.env` from `.env.example` and only configure providers you are authorized to use.
 
-```powershell
-python start_api.py
-```
+## Deployment status
 
-## Project Layout
+The Cloud Run workflow currently present in the repository belongs to the older MVP and its historical runs failed. It should **not be treated as a live deployment of Campoy Nexus**.
 
-```text
-.
-|-- src/jobfit/
-|   |-- scoring.py                    # Job scoring, warnings, location rules
-|   `-- agents/
-|       |-- adzuna_agent.py           # Adzuna vacancy normalization
-|       |-- serpapi_jobs_agent.py     # SerpAPI Google Jobs normalization
-|       `-- multi_source_agent.py     # Multi-source search and dedupe
-|-- examples/
-|   |-- jobfit_demo.py
-|   `-- multi_source_jobfit_demo.py
-|-- tests/jobfit/
-|   |-- test_career_track.py
-|   |-- test_dedupe.py
-|   |-- test_location_and_red_flags.py
-|   `-- test_salary_parsing.py
-|-- docs/
-|-- config/
-`-- output/
-```
+A new public deployment should only be enabled after:
 
-## Outputs
-
-The multi-source demo writes ranked results to:
-
-- `output/multi_source_jobfit_results.json`
-- `output/multi_source_jobfit_results.csv`
-
-Runtime outputs, virtual environments, local databases, and `.env` files are ignored by Git.
-
-## Validation
-
-The main regression checks live under `tests/jobfit` and cover:
-
-- salary parsing and monthly salary normalization
-- role and career-track scoring
-- ZMVM and Estado de Mexico location behavior
-- critical warning detection
-- cross-source deduplication and metadata merging
+1. the sanitized Nexus subset is synchronized;
+2. deployment configuration is updated to the current architecture;
+3. required cloud secrets are configured;
+4. API, database and worker boundaries are reviewed for public exposure;
+5. a smoke test passes against the deployed environment.
 
 ## Repository
 
-- GitHub: https://github.com/CampoyLira1994/JobFit-AI-MVP
-- Main branch: `main`
+- Public mirror: https://github.com/CampoyLira1994/JobFit-AI-MVP
+- Default branch: `main`
 - License: MIT
+
+Issues and pull requests are welcome. When proposing changes, distinguish clearly between **designed**, **implemented**, **tested** and **validated** behavior.
