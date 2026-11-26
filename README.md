@@ -156,7 +156,7 @@ Never commit:
 
 Use synthetic or explicitly authorized data in examples and tests.
 
-## Running the current public MVP
+## Installation\n\nSee [INSTALL.md](INSTALL.md) for Windows, Linux/macOS and Docker setup.\n\n## Running the current public MVP
 
 The commands below apply to the code that is currently published on `main`:
 
